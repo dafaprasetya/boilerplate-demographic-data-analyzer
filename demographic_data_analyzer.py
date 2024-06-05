@@ -25,27 +25,47 @@ def calculate_demographic_data(print_data=True):
     # What percentage of people without advanced education make more than 50K?
 
     # with and without `Bachelors`, `Masters`, or `Doctorate`
-    higher_education = None
-    lower_education = None
 
+    
+    gapunya_gelar = df[~df['education'].isin(['Bachelors', 'Masters', 'Doctorate'])]
+    l = gapunya_gelar.shape[0]
+    
+    punya_gelar = df[df['education'].isin(['Bachelors', 'Masters', 'Doctorate'])]
+    h = punya_gelar.shape[0]
+
+
+    total = df.shape[0]
+
+    higher_education = (h/total)*100
+    lower_education = (l/total)*100
+
+    pinter = punya_gelar[punya_gelar['salary'] == '>50K'].shape[0]
+    orang_dalem = gapunya_gelar[gapunya_gelar['salary'] == '>50K'].shape[0]
     # percentage with salary >50K
-    higher_education_rich = None
-    lower_education_rich = None
+    higher_education_rich = (pinter/punya_gelar.shape[0])*100
+    lower_education_rich = (orang_dalem/gapunya_gelar.shape[0])*100
 
     # What is the minimum number of hours a person works per week (hours-per-week feature)?
-    min_work_hours = None
+    min_work_hours = df['hours-per-week'].min()
 
     # What percentage of the people who work the minimum number of hours per week have a salary of >50K?
-    num_min_workers = None
+    total_min_gawe = df[df['hours-per-week']==min_work_hours]
+    total_min_pekerja = total_min_gawe[total_min_gawe['salary'] == '>50K'].shape[0]
+    num_min_workers = total_min_gawe.shape[0]
 
-    rich_percentage = None
+    rich_percentage = (total_min_pekerja/num_min_workers)*100
 
     # What country has the highest percentage of people that earn >50K?
-    highest_earning_country = None
-    highest_earning_country_percentage = None
+    gaji = df[df['salary'] == '>50K']
+    negara = gaji['native-country']
+    highest_earning_country = negara.value_counts().idxmax() #pick highest value from native-contry
+    highest_earning_country_percentage = (negara.value_counts().max()/gaji.shape[0])*100
 
     # Identify the most popular occupation for those who earn >50K in India.
-    top_IN_occupation = None
+    gajih =df[df['salary'] == '>50K']
+    negarah = gajih[gajih['native-country'] == 'India']
+    occu=negarah['occupation']
+    top_IN_occupation = occu.value_counts().idxmax()
 
     # DO NOT MODIFY BELOW THIS LINE
 
